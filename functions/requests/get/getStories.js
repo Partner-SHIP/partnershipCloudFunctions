@@ -1,27 +1,39 @@
 const firebase = require("../../firebase.js");
+const collections = require("../../utils/utils.js").getCollections();
+
+function getStoryList(user, page, elem_per_page) {
+    const p = (page === null) ? 0 : page;
+    const promise = firebase.admin.firestore().collection(collections.alias.stories)
+        .get()
+        .then(
+            (value) => {
+                var list = [];
+                value.docs.forEach((elem) => {
+                    const item = elem.data();
+                    list.push(item);
+                }, list);
+                list.slice(p * elem_per_page, (p + 1) * elem_per_page);
+                return (list);
+            },
+            (rejectReason) => { return (null); }
+        );
+    return (promise);
+}
 
 exports.getStories = firebase.functions.https.onRequest((request, response) => {
-    var result = [
-        storyLine("StoryMockup1", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://pbs.twimg.com/media/Dd3XwOIUwAAgIGN.jpg", "https://partnership.ovh/wp-content/uploads/2018/11/figure.png"),
-        storyLine("StoryMockup2", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "http://www.easycanvasprints.com/Upload/mkt/PLA/ECP/BOTC-generic3.jpg", "https://tkruger4.files.wordpress.com/2010/11/logo-2_21.jpg"),
-        storyLine("StoryMockup3 Amazing", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxiIrXorfQ9MeUgZOyJhkb9UbIES3QuCWBKaw6_D9YDzTQ19iF", "https://www.brandcrowd.com/gallery/brands/pictures/picture13090346529255.jpg"),
-        storyLine("StoryMockup4 indeed", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyuKjJMVoDDSPZn6yGyLVLqTby-R1rRGze6c1IYwMNPHhWfaWJ", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEnV-IDQ1_s8JfDgd7NJ9ym5o4EUKwC2dzXcAjzeeem8pQOBua"),
-        storyLine("StoryMockup5", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://pbs.twimg.com/media/Dd3XwOIUwAAgIGN.jpg", "https://partnership.ovh/wp-content/uploads/2018/11/figure.png"),
-        storyLine("StoryMockup6", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "http://www.easycanvasprints.com/Upload/mkt/PLA/ECP/BOTC-generic3.jpg", "https://tkruger4.files.wordpress.com/2010/11/logo-2_21.jpg"),
-        storyLine("StoryMockup7 Amazing", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxiIrXorfQ9MeUgZOyJhkb9UbIES3QuCWBKaw6_D9YDzTQ19iF", "https://www.brandcrowd.com/gallery/brands/pictures/picture13090346529255.jpg"),
-        storyLine("StoryMockup8 indeed", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyuKjJMVoDDSPZn6yGyLVLqTby-R1rRGze6c1IYwMNPHhWfaWJ", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEnV-IDQ1_s8JfDgd7NJ9ym5o4EUKwC2dzXcAjzeeem8pQOBua"),
-        storyLine("StoryMockup9", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://pbs.twimg.com/media/Dd3XwOIUwAAgIGN.jpg", "https://partnership.ovh/wp-content/uploads/2018/11/figure.png"),
-        storyLine("StoryMockup10", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "http://www.easycanvasprints.com/Upload/mkt/PLA/ECP/BOTC-generic3.jpg", "https://tkruger4.files.wordpress.com/2010/11/logo-2_21.jpg"),
-        storyLine("StoryMockup11 Amazing", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxiIrXorfQ9MeUgZOyJhkb9UbIES3QuCWBKaw6_D9YDzTQ19iF", "https://www.brandcrowd.com/gallery/brands/pictures/picture13090346529255.jpg"),
-        storyLine("StoryMockup12 indeed", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyuKjJMVoDDSPZn6yGyLVLqTby-R1rRGze6c1IYwMNPHhWfaWJ", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEnV-IDQ1_s8JfDgd7NJ9ym5o4EUKwC2dzXcAjzeeem8pQOBua"),
-        storyLine("StoryMockup13", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://pbs.twimg.com/media/Dd3XwOIUwAAgIGN.jpg", "https://partnership.ovh/wp-content/uploads/2018/11/figure.png"),
-        storyLine("StoryMockup14", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "http://www.easycanvasprints.com/Upload/mkt/PLA/ECP/BOTC-generic3.jpg", "https://tkruger4.files.wordpress.com/2010/11/logo-2_21.jpg"),
-        storyLine("StoryMockup15 Amazing", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxiIrXorfQ9MeUgZOyJhkb9UbIES3QuCWBKaw6_D9YDzTQ19iF", "https://www.brandcrowd.com/gallery/brands/pictures/picture13090346529255.jpg"),
-        storyLine("StoryMockup16 indeed", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyuKjJMVoDDSPZn6yGyLVLqTby-R1rRGze6c1IYwMNPHhWfaWJ", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEnV-IDQ1_s8JfDgd7NJ9ym5o4EUKwC2dzXcAjzeeem8pQOBua"),
-        storyLine("StoryMockup17", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://pbs.twimg.com/media/Dd3XwOIUwAAgIGN.jpg", "https://partnership.ovh/wp-content/uploads/2018/11/figure.png"),
-        storyLine("StoryMockup18", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "http://www.easycanvasprints.com/Upload/mkt/PLA/ECP/BOTC-generic3.jpg", "https://tkruger4.files.wordpress.com/2010/11/logo-2_21.jpg"),
-        storyLine("StoryMockup19 Amazing", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxiIrXorfQ9MeUgZOyJhkb9UbIES3QuCWBKaw6_D9YDzTQ19iF", "https://www.brandcrowd.com/gallery/brands/pictures/picture13090346529255.jpg"),
-        storyLine("StoryMockup20 indeed", "Descriptiondescriptiondescriptiondescriptiondescriptiondescription", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyuKjJMVoDDSPZn6yGyLVLqTby-R1rRGze6c1IYwMNPHhWfaWJ", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEnV-IDQ1_s8JfDgd7NJ9ym5o4EUKwC2dzXcAjzeeem8pQOBua"),
-    ];
-    response.send(result);
+    var result = {};
+    getStoryList(request.body.user, request.body.page, 20).then((tab) => {
+        result.value = tab;
+        response.send(result);
+        return (true);
+    },
+    (reason) => {
+        result.error = reason;
+        response.send(reason);
+        return (false);
+    }).catch((reason) => {
+        result.error = reason;
+        reason.send(result);
+        return (false);
+    });
 });

@@ -2,7 +2,8 @@ const alias = {
     membership: "membership",
     profiles: "profiles",
     users: "/users/",
-    projects: "projects"
+    projects: "projects",
+    stories: "stories",
 }
 
 exports.build = function () {

@@ -3,13 +3,17 @@ const collections = require("../../utils/utils.js").getCollections();
 
 function getProjectList(user, page, elem_per_page) {
     const p = (page === null) ? 0 : page;
-    const promise = firebase.admin.firestore().doc(collections.alias.projects)
+    const promise = firebase.admin.firestore().collection(collections.alias.projects)
         .get()
         .then(
-            (value) => {    
-                var result = value.data()
-                    .slice(elem_per_page * p, elem_per_page * (p + 1));
-                return (result);
+            (value) => {
+                var list = [];
+                value.docs.forEach((elem) => {
+                    const item = elem.data();
+                    list.push(item);
+                }, list);
+                list.slice(p * elem_per_page, (p + 1) * elem_per_page);
+                return (list);
             },
             (rejectReason) => { return (null); }
         );
@@ -18,7 +22,21 @@ function getProjectList(user, page, elem_per_page) {
 
 exports.getProjectQueryResult = firebase.functions.https.onRequest((request, response) => {
     var result = {};
-    const tab = getProjectList(request.body.user, request.body.page, 20);
-    result.value = tab;
-    response.send(result);
+    getProjectList(request.body.user, request.body.page, 20)
+        .then((tab) => {
+            result.value = tab;
+            response.send(result);
+            return (true);
+        },
+        (reason) => {
+            result.error = reason;
+            response.send(result);
+            return (false);
+        }
+        )
+        .catch((reason) => {
+            result.error = reason;
+            reason.send(result);
+            return (false);
+        });
 });
