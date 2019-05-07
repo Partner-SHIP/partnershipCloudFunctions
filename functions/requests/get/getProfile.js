@@ -2,9 +2,8 @@ const firebase = require("../../firebase.js");
 const collections = require("../../utils/utils.js").getCollections();
 
 function getProfile(user, profile) {
-    console.log("parameters,", user, "\n", profile);
-    if (profile == null) 
-        throw Error("Invalid Body");
+    if (profile === null) 
+        return (null);
     const promise = firebase.admin.firestore().collection(collections.alias.profiles)
         .get()
         .then(
@@ -12,8 +11,8 @@ function getProfile(user, profile) {
                 var result = value.docs.find((elem) => {
                     return (elem.data.uid === profile);
                 })
-                if (result == null) {   
-                    throw Error("No Entry Found");
+                if (result === null) {   
+                    return(null);
                 }
                 return (result.data());
             },
