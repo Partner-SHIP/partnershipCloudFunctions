@@ -9,8 +9,8 @@ function getProject(user, project) {
                 var result = value.docs.find((elem) => {
                     return (elem.data.uid === project);
                 })
-                if (result == null) {   
-                    throw Error("No Entry Found");
+                if (!result) {   
+                    return (null);
                 }
                 return (result.data());
             },

@@ -23,7 +23,7 @@ function getProjectListQuery(user, query, page, elem_per_page) {
 
 function getProjectList(user, queryInput, page, elem_per_page) {
     const p = (page === null) ? 0 : page;
-    if (queryInput != null && queryInput != "")
+    if (queryInput !== null && queryInput !== "")
         return (getProjectListQuery(user, queryInput, page, elem_per_page));
     const promise = firebase.admin.firestore().collection(collections.alias.projects)
         .get()
