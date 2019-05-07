@@ -4,7 +4,9 @@ const test_requests = {
 
 const get_requests = {
     getStories:require("./get/getStories").getStories,
-    getProjectQueryResult:require("./get/getProjectQueryResult").getProjectQueryResult
+    getProjectQueryResult:require("./get/getProjectQueryResult").getProjectQueryResult,
+    getProfile:require("./get/getProfile").getProfile,
+    getProject:require("./get/getProject").getProject
 };
 
 const post_requests = {};
