@@ -6,10 +6,17 @@ const get_requests = {
     getStories:require("./get/getStories").getStories,
     getProjectQueryResult:require("./get/getProjectQueryResult").getProjectQueryResult,
     getProfile:require("./get/getProfile").getProfile,
-    getProject:require("./get/getProject").getProject
+    getProject:require("./get/getProject").getProject,
+    getNotif:require("./get/getNotif").getNotif,
+    getProjectMembers:require("./get/getProjectMembers").getProjectMembers,
 };
 
-const post_requests = {};
+const post_requests = {
+    postAnswerCandidature:require("./post/postAnswerCandidature").postAnswerCandidature,
+    postProject:require("./post/postProject").postProject,
+    postMembershipSlot:require("./post/postMembershipSlot").postMembershipSlot,
+    postMembershipCandidature:require("./post/postMembershipCandidature").postMembershipCandidature,
+};
 
 const del_requests = {};
 

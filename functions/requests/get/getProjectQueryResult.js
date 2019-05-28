@@ -3,7 +3,6 @@ const collections = require("../../utils/utils.js").getCollections();
 
 function getProjectListQuery(user, query, page, elem_per_page) {
     const p = (page === null) ? 0 : page;
-    console.log("test");
     const promise = firebase.admin.firestore().collection(collections.alias.projects)
         .get()
         .then(
@@ -11,7 +10,8 @@ function getProjectListQuery(user, query, page, elem_per_page) {
                 var list = [];x
                 var tmplist = value.docs.filter((value) => {return (value.data().name.includes(query));});
                 tmplist.forEach((elem) => {
-                    const item = elem.data();
+                    var item = elem.data();
+                    item.id = elem.id;
                     list.push(item);
                 }, list);
                 list.slice(p * elem_per_page, (p + 1) * elem_per_page);
