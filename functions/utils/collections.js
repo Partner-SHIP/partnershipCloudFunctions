@@ -4,7 +4,7 @@ const alias = {
     membershipSlot: "membershipSlot",
     profiles: "profiles",
     notifications:"notifications",
-    users: "/users/",
+    users: "users",
     projects: "projects",
     stories: "stories",
 }

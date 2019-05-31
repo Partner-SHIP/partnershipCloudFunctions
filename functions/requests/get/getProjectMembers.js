@@ -19,6 +19,7 @@ function getProjectMembers(user, project) {
     return (promise);
 }
 
+// user, project
 exports.getProjectMembers = firebase.functions.https.onRequest((request, response) => {
     var result = {};
     const p = getProjectMembers(request.body.user, request.body.project);
