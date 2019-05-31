@@ -21,7 +21,9 @@ function getProject(user, project) {
 
 exports.getProject = firebase.functions.https.onRequest((request, response) => {
     var result = {};
-    getProject(request.body.user, request.body.project).then((resultValue) => {
+    const user = request.get("user");
+    const project = request.get("project");
+    getProject(user, project).then((resultValue) => {
         result.value = resultValue;
         response.send(result);
         return (true);

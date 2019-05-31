@@ -61,10 +61,13 @@ function postMembershipSlot(user, tag, project) {
 // user, tag, project
 exports.postMembershipSlot = firebase.functions.https.onRequest((request, response) => {
     var result = {};
+    const user = request.get("user");
+    const tag = request.get("tag");
+    const project = request.get("project");
     const p = postMembershipSlot(
-        request.body.user,
-        request.body.tag,
-        request.body.project
+        user,
+        tag,
+        project
     );
     p.then((pushpromise) => {
         if (pushpromise === null) {

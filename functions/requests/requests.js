@@ -9,6 +9,7 @@ const get_requests = {
     getProject:require("./get/getProject").getProject,
     getNotif:require("./get/getNotif").getNotif,
     getProjectMembers:require("./get/getProjectMembers").getProjectMembers,
+    getCandidates:require("./get/getCandidates").getCandidates,
 };
 
 const post_requests = {
@@ -20,7 +21,9 @@ const post_requests = {
 
 const del_requests = {};
 
-const put_requests = {};
+const put_requests = {
+    putRedNotification:require("./put/putRedNotification").putRedNotification,
+};
 
 [test_requests, get_requests, post_requests, del_requests, put_requests].forEach( // for each request type
     element => {

@@ -176,10 +176,13 @@ function postAnswerCandidature(user, candidature, accepted) {
 // user, candidature, accepted
 exports.postAnswerCandidature = firebase.functions.https.onRequest((request, response) => {
     var result = {};
+    const user = request.get("user");
+    const candidature = request.get("candidature");
+    const accepted = request.get("accepted");
     const p = postAnswerCandidature(
-        request.body.user,
-        request.body.candidature,
-        request.body.accepted
+        user,
+        candidature,
+        accepted
     );
     if (p === null) {
         console.log("not allowed")

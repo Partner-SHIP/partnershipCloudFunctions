@@ -22,7 +22,9 @@ function getStoryList(user, page, elem_per_page) {
 
 exports.getStories = firebase.functions.https.onRequest((request, response) => {
     var result = {};
-    getStoryList(request.body.user, request.body.page, 20).then((tab) => {
+    const user = request.get("user");
+    const page = request.get("page");
+    getStoryList(user, page, 20).then((tab) => {
         result.value = tab;
         response.send(result);
         return (true);

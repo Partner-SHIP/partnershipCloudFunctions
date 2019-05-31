@@ -19,7 +19,9 @@ function getMembershipSlot(project) {
 
 exports.getProjectMembers = firebase.functions.https.onRequest((request, response) => {
     var result = {};
-    const p = getMembershipSlot(request.body.user, request.body.project);
+    const user = request.get("user");
+    const project = request.get("project");
+    const p = getMembershipSlot(user, project);
     p.then((value) => {
         result.value = value;
         response.send(result);

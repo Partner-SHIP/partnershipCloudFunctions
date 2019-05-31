@@ -45,7 +45,10 @@ function getProjectList(user, queryInput, page, elem_per_page) {
 
 exports.getProjectQueryResult = firebase.functions.https.onRequest((request, response) => {
     var result = {};
-    getProjectList(request.body.user, request.body.query, request.body.page, 20)
+    const user = request.get("user");
+    const query = request.get("query");
+    const page = request.get("page");
+    getProjectList(user, query, page, 20)
         .then((tab) => {
             result.value = tab;
             response.send(result);

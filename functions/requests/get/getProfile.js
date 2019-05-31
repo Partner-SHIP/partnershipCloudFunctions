@@ -23,7 +23,9 @@ function getProfile(user, profile) {
 
 exports.getProfile = firebase.functions.https.onRequest((request, response) => {
     var result = {};
-    getProfile(request.body.user, request.body.profile).then((resultValue) => {
+    const user = request.get("user");
+    const profile = request.get("profile");
+    getProfile(user, profile).then((resultValue) => {
         result.value = resultValue;
         response.send(result);
         return (true);

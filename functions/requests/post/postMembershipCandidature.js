@@ -42,9 +42,11 @@ function postMembershipCandidature(user, membershipSlot) {
 // user, membershipSlot
 exports.postMembershipCandidature = firebase.functions.https.onRequest((request, response) => {
     var result = {};
+    const user = request.get("user");
+    const membershipSlot = request.get("membershipSlot");
     const p = postMembershipCandidature(
-        request.body.user,
-        request.body.membershipSlot
+        user,
+        membershipSlot
     );
     p.then((pushpromise) => {
         if (pushpromise === null) {

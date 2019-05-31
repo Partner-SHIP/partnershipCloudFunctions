@@ -104,20 +104,26 @@ function postOwnership(user) {
 
 // user, name, description, logoPath, bannerPath, ?projectLocation
 exports.postProject = firebase.functions.https.onRequest((request, response) => {
+    const name = request.get("name");
+    const description = request.get("description");
+    const logoPath = request.get("logoPath");
+    const bannerPath = request.get("bannerPath");
+    const projectLocation = request.get("projectLocation");
+    const user = request.get("user");
     var result = {};
     const p =   postProject(
-                    projectSyntaxing(   request.body.name,
-                                        request.body.description,
-                                        request.body.logoPath,
-                                        request.body.bannerPath,
-                                        request.body.projectLocation)
+                    projectSyntaxing(   name,
+                                        description,
+                                        logoPath,
+                                        bannerPath,
+                                        projectLocation)
                     );
     if (isUndefined(p)) {
         response.send({"error":"couldn't create project"});
         return (false);
     }
     p.then((resultValue) => {
-            const p2 = postOwnership(request.body.user);
+            const p2 = postOwnership(user);
             p2.then((resultValue) => {
                 result.value = resultValue;
                 response.send(result);
