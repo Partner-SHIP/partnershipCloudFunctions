@@ -1,17 +1,17 @@
 const firebase = require("../../firebase.js");
 const collections = require("../../utils/utils.js").getCollections();
 
-function getProfile(user, profile) {
-    if (profile === null) 
+function getProfile(user) {
+    if (user === null)
         return (null);
     const promise = firebase.admin.firestore().collection(collections.alias.profiles)
         .get()
         .then(
             (value) => {
                 var result = value.docs.find((elem) => {
-                    return (elem.data.uid === profile);
+                    return (elem.data.uid === user);
                 })
-                if (result === null) {   
+                if (!result) {
                     return(null);
                 }
                 return (result.data());
@@ -23,9 +23,8 @@ function getProfile(user, profile) {
 
 exports.getProfile = firebase.functions.https.onRequest((request, response) => {
     var result = {};
-    const user = request.get("user");
-    const profile = request.get("profile");
-    getProfile(user, profile).then((resultValue) => {
+    const user = request.get("profile");
+    getProfile(user).then((resultValue) => {
         result.value = resultValue;
         response.send(result);
         return (true);
