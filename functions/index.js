@@ -325,15 +325,82 @@ exports.addTag = functions.https.onRequest((request, response) => {
     }
 });
 
-exports.addFriend = functions.https.onRequest((request, response) => {
+exports.Like = functions.https.onRequest((request, response) => {
     const uid = request.query.uid;
-    const name = request.query.name;
-    const friend = request.query.friend;
-    var docRef = db.collection('profiles').doc(uid).collection('friends').doc();
-
-        docRef.update({
-            name: name,
-            uid : friend
+    const projectUid = request.query.projectUid;
+    let promise = db.collection('projects').get()
+    .then((snapshot) => {
+        let id = [];
+        snapshot.forEach((doc) => {
+            console.log(doc.data());
+            id.push( "uid : " + doc.id,doc.data());
+            if (projectUid === doc.id ) {
+                if (doc.data().likeUid.indexOf(uid) !== -1)
+                {
+                    console.log('doc.data().likeUid','reponseuid')
+                    return response.status(200).send("Vous aimez deja ce projet");
+                }
+                else
+                {    
+                let tmp = [doc.data()];
+                var docRef = db.collection('projects').doc(projectUid);
+                docRef.update({
+                likeNumber: doc.data().likeNumber + 1,
+                likeUid : admin.firestore.FieldValue.arrayUnion(uid)
+                });
+                return response.status(200).send(tmp);
+              }
+            }
         });
-        return response.status(200).send("Création friends réussie");
+        if (projectUid !== undefined)
+           return response.status(200).send("This projects does not exist");
+        else
+        {
+            return response.status(200).send("Création projects réussie");
+        }
+    })
+    .catch((err) => {
+        console.log('Error getting documents', err);
+    });
+  
+});
+
+exports.Unlike = functions.https.onRequest((request, response) => {
+    const uid = request.query.uid;
+    const projectUid = request.query.projectUid;
+    let promise = db.collection('projects').get()
+    .then((snapshot) => {
+        let id = [];
+        snapshot.forEach((doc) => {
+            console.log(doc.data());
+            id.push( "uid : " + doc.id,doc.data());
+            if (projectUid === doc.id ) {
+                if (doc.data().likeUid.indexOf(uid) !== -1)
+                {
+                    let tmp = [doc.data()];
+                    var docRef = db.collection('projects').doc(projectUid);
+                    docRef.update({
+                    likeNumber: doc.data().likeNumber + 1,
+                    likeUid : admin.firestore.FieldValue.arrayRemove(uid)
+                    });
+                    return response.status(200).send(tmp);
+                }
+                else
+                {    
+                console.log('doc.data().likeUid','reponseuid')
+                return response.status(200).send("Vous n'aimez pas ce projet");
+              }
+            }
+        });
+        if (projectUid !== undefined)
+           return response.status(200).send("This projects does not exist");
+        else
+        {
+            return response.status(200).send("Création projects réussie");
+        }
+    })
+    .catch((err) => {
+        console.log('Error getting documents', err);
+    });
+  
 });
